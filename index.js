@@ -1,17 +1,33 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const app = express();
+const Product = require("./models/product.model");
 
-app.listen(3000, () => {
-  console.log("HELLO WORLD");
-});
+const app = express();
+app.use(express.json());
 
 app.get("/", (req, res) => {
-  res.send("Hello from NODE API!");
+  res.send("Hello World");
 });
 
-mongoose.connect("mongodb+srv://nynnwork:8QL2up5l8jJUpro5@restapi.hwpjh4s.mongodb.net/Node-API?retryWrites=true&w=majority&appName=restApi").then(()=>{
-    console.log("CONNECT DB")
-}).catch(()=>{
-    console.log("ERROR DB")
-})
+app.post("/api/products", async (req, res) => {
+  try {
+    const product = await Product.create(req.body);
+    res.status(200).json(product);
+  } catch (e) {
+    res.status(500).json({ message: error.message });
+  }
+});
+
+mongoose
+  .connect(
+    "mongodb+srv://nynnwork:8QL2up5l8jJUpro5@restapi.hwpjh4s.mongodb.net/Node-API?retryWrites=true&w=majority&appName=restApi"
+  )
+  .then(() => {
+    console.log("CONNECT DB");
+    app.listen(3000, () => {
+      console.log("HELLO WORLD");
+    });
+  })
+  .catch(() => {
+    console.log("ERROR DB");
+  });
